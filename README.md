@@ -1,101 +1,79 @@
 # AI research workflow
 
-How I use Claude Code for empirical research and for building software, in outline, with templates you can copy. The same content is on my website: [How I work with AI](https://jackyyangjq.github.io/ai-workflow/).
+These are the habits that have saved me the most time when using Claude Code for research and for building software, with templates you can copy. The same content is on my website: [How I work with AI](https://jackyyangjq.github.io/ai-workflow/).
 
 I am Jiaqi (Jacky) Yang, a dual PhD candidate at The Hong Kong Polytechnic University and the University of Surrey. I work on tourism and hospitality economics with causal inference and LLM text measurement. [Website](https://jackyyangjq.github.io) · [GitHub](https://github.com/jackyyangjq)
 
-**Contents:** [Vibe coding](#vibe-coding) · [A paper from question to submission](#a-paper-from-question-to-submission) · [Matching effort to the task](#matching-effort-to-the-task) · [Running a project with AI sessions](#running-a-project-with-a-team-of-ai-sessions) · [Quiet errors](#errors-that-dont-announce-themselves) · [Tools and limits](#tools-and-limits) · [Templates](#templates)
+**Contents:** [Let it ask the questions first](#let-it-ask-the-questions-first) · [Four commands worth learning](#four-commands-worth-learning) · [One paper, many sessions](#one-paper-many-sessions) · [Errors that give no warning](#errors-that-give-no-warning) · [Ground rules](#ground-rules) · [Templates](#templates)
 
-## Vibe coding
+## Let it ask the questions first
 
-Vibe coding means describing software in plain language and letting an AI coding agent write the code. I decide what gets built and how to check it.
+Most of the time I lose with an AI agent comes from letting it start too early. Before any code or text is written, have it interview you, then choose from a short list of options.
 
-- Spec first: the agent interviews me before any code, and my answers become the spec.
-- Check every step: after each change I run the app or the numbers, rather than trusting code that reads well.
-- Known answers: methods are tested on simulated data with a known effect, and LLM labels against a second model.
-- Secrets stay local: API keys stay out of git, and I read every public repository before it goes out.
+- **Ask to be interviewed.** Start with: "Don't write anything yet. First ask me the questions you need answered." Your answers become the spec.
+- **Pick from a list.** Ask for three ways to do it and what each one costs. Choosing from a list is quicker than correcting a draft you never wanted.
+- **Look at the result.** After each change, run the app or open the table. Code that reads well can still give the wrong answer.
 
-Built this way:
+Small tools I built this way:
 
-- [Calorie tracker](https://jackyyangjq.github.io/caltrk/): single-file web app that reads food photos with a vision model. 20 versions in seven weeks.
-- [Finfluencer digest](https://github.com/jackyyangjq/finfluencer-digest): runs every morning on GitHub Actions and sums up the stock calls made on finance channels.
-- [Filings Q&A agent](https://github.com/jackyyangjq/filings-qa-agent): answers questions about SEC filings with a checkable source for every sentence, tested on 50 questions.
-- Open-source fixes: a merged [pull request to ClaudeCodeUsage](https://github.com/ClaudeCodeUsage/ClaudeCodeUsage/pull/115), a VS Code extension that tracks Claude Code and Codex usage, and [four pull requests](https://github.com/irrwood/catfolio/pulls?q=author%3Ajackyyangjq) to an open-source portfolio dashboard.
+- [Calorie tracker](https://jackyyangjq.github.io/caltrk/): a web app that reads food photos with a vision model.
+- [Finfluencer digest](https://github.com/jackyyangjq/finfluencer-digest): summarises the stock calls made on finance channels each morning.
+- [Filings Q&A agent](https://github.com/jackyyangjq/filings-qa-agent): answers questions about SEC filings and cites a source for every sentence.
 
-## A paper from question to submission
+## Four commands worth learning
 
-A working paper on generative AI and tourism jobs. Claude Code worked on every stage and I kept the decisions. Results and data details stay out of this repository until the paper is published.
+Beyond ordinary chat, these are the commands I use most. All four work in the terminal, and /btw, /doctor and /effort also work in the desktop app.
 
-| Stage | What the AI does | What I decide |
+| Command | Use it when | How |
 |---|---|---|
-| Question and literature | Searches the literature, summarises papers and checks whether a term I plan to use already means something else in the field | The question and what the paper adds |
-| Design | Drafts alternative designs and lists the threats to each | The identification strategy |
-| Data and code | Writes the scripts and re-estimates the main results a second, independent way | Definitions, the sample, and what a result must survive before I trust it |
-| Writing | Drafts sections from my outline, following a style guide and a fixed glossary | The argument and every claim |
-| Revision | Turns supervisor comments into task cards; a fresh session audits each change | Which comments to act on, and how |
-| Submission | Builds the journal's Word files and traces every number back to a script | The final read and the AI-use statement |
+| `/btw` | You want to ask something quick while Claude is still working | Type `/btw` and your question. It can see the conversation so far, answers in a small window, and the main task keeps running. The question is not added to the conversation, so it does not affect the main task. It cannot open files or run commands, so ask about what has already happened, for example "which file did you just change, and why?" In the desktop app it is called side chat, and on a Mac you open it with Cmd+;. |
+| `/doctor` | Claude starts ignoring one of your rules, or you have installed many plugins and skills | It checks your installation, unused extensions and your rules files, and reports before changing anything. Newer versions add `/doctor prompt-audit`, which looks for instructions that contradict each other or are out of date. The first time I ran it, it found 17 problems, several of them pairs of rules that contradicted each other. Read the report, decide which of the conflicting rules to keep, and only then let it make the changes. |
+| `/effort` | The work moves from planning to checking | It sets how hard the model thinks before it answers. My rule is low effort while deciding what to do, and high effort when the result has to be right, such as debugging an estimate that looks wrong or reviewing code that handles passwords and keys. If the plan itself is wrong, more effort will not save it, so go back to the questions. |
+| `/rewind` | Claude has gone in the wrong direction and you want to go back | With the prompt box empty, press Esc twice, or type `/rewind`, and choose an earlier message. You can restore the code, the conversation, or both. It does not undo changes to files that only shell commands touched, so keep using Git for anything that matters. |
 
-The AI shock arrived while in-person services were still recovering from the pandemic. Comparing tourism with other service industries keeps the two apart.
+## One paper, many sessions
 
-## Matching effort to the task
-
-With Claude Opus 5.5, Claude Code lets me set how hard the model thinks and checks before it answers. I switch it several times on one task: low while we work out what to do, high when the result needs checking. More effort catches edge cases; it does not fix a wrong approach.
-
-Interview (low effort) → Build (low or medium) → Review (by me) → Verify (high effort)
-
-| Effort | In research | In web coding |
-|---|---|---|
-| Low | Brainstorming questions; reformatting tables and references | Copy and style changes, small fixes |
-| Medium | Drafting a section from my outline; a cleaning script or figure built to a clear spec | A feature built to a clear spec |
-| High | Debugging an estimate that looks wrong; the pre-submission audit that traces every number to code | Debugging and code review; anything that touches keys or user data |
-| Max | Long unattended jobs with a clear finish line, such as replicating a full analysis with checks | Building and testing an app end to end; a security review |
-
-Adapted for research and web work from Thariq Shihipar, ["Using Claude Code: Spending your effort"](https://claude.dev/blog/spending-your-effort/) (September 2026).
-
-## Running a project with a team of AI sessions
-
-A paper outgrows a single chat, so I run it like a small team.
+A paper takes months, which is far too long for one chat. I organise it the way a small team would: one session plans, other sessions do the work, and a fresh one checks it. Progress is kept in files, so nothing is lost when a session ends.
 
 | Step | Who | What happens |
 |---|---|---|
-| Plan | Coordinator | Splits the work into task cards and sends me short briefings. It never does the tasks itself. |
-| Do | Worker sessions | Each card runs in its own session: the strongest model for judgement, a faster one for mechanical work. |
-| Check | Fresh reviewer | A new session checks the result against the card's acceptance criteria. |
-| Record | Task board | One file holds every card's status, so progress survives across sessions and devices. |
+| Plan | Planning session | Splits the work into task cards. Each card states the goal and how we will know it is done. |
+| Do | Worker sessions | One card per session. The strongest model handles judgement calls and a cheaper one handles routine work. |
+| Check | Fresh session | A new session checks the result against the card. The session that did the work should not be the only one to check it. |
+| Record | Task board | One file lists every card and its status. Each new session reads it before starting. |
 
-Some decisions never leave me: the research design, how the main results are defined, the hypotheses and the structure of the paper.
+Do not start too many sessions at once. When parallel work exhausted my usage quota, I asked the planning session for the prompts and the order to run them, ran them myself, and had it check the results at the end.
 
-## Errors that don't announce themselves
+## Errors that give no warning
 
-The costliest mistakes in my AI-assisted work showed no error message. Most produced a plausible number that was wrong. The usual fix: the session that wrote something is never the only one that checks it.
+The worst mistakes I have made with AI produced no error message, only a number or a file that looked fine. Here is what each one looked like and how to catch it.
 
-| Error | What happened | What I do now |
+| Error | What happened | Check |
 |---|---|---|
-| An ID that overflowed | Two small-integer columns were multiplied to build a group ID. The product overflowed and quietly merged thousands of groups, which moved the main estimate by about a fifth. A separate verification session caught it. | Cast types before building keys, and have a separate session re-check the main results. |
-| A weight left out | One step of a weighted fixed-effects model ran without the weights. The estimate matched neither valid version of the model, yet it reached early figures before a re-estimate with explicit dummy variables exposed it. | Headline estimates must agree with a second, independent implementation. |
-| A gap in the wrong place | Salary data were almost empty for the five quarters covering the AI shock and the year after it, so a before-and-after comparison was really comparing two years far apart. | Plot each variable's coverage over time before using it. |
-| A sign that flipped a finding | Capital spending was stored as negative numbers, following cash-flow convention. Used as it was, it reversed a conclusion. | Check units and signs against the data documentation for every variable. |
-| A build that said it worked | The script that turns a manuscript into a Word file skipped formatting rules that did not match and still reported success. The headings came out in the wrong font. | Open the output file and check it, whatever the log says. |
-| An agent that kept running | A file search started by an AI helper kept going after its task had ended. For almost three hours it ran at high CPU and swamped the cloud-sync service, which tried to download every file the search touched. | Give agents narrow folder paths, and check for leftover processes after long jobs. |
+| A log that said it worked | A script that turned my manuscript into a Word file skipped the formatting rules it could not match and still reported success. The headings came out in the wrong font. | Open the output and look at it, whatever the log says. |
+| A sign stored the other way round | Capital spending was stored as negative numbers, as is usual in cash-flow statements. Used without correcting the sign, it turned one of my conclusions the wrong way round. | Compare units and signs with the data documentation. |
+| Groups merged without warning | An ID built from two other columns was not unique, so groups that should have stayed separate were combined. Nothing failed, but the results changed. | Count unique IDs before and after every merge. |
+| A helper that kept running | A file search started by an AI helper kept running after its task had ended. It used the processor for hours and made the cloud-sync service download every file it touched. | Give agents narrow folder paths, and look for leftover processes after long jobs. |
 
-## Tools and limits
+## Ground rules
 
-Tools:
+However fast AI makes drafting, these are the checks I never skip.
 
-- Claude Code is my main tool. Each project has a rules file and a memory that syncs across my devices; a few custom skills handle recurring research tasks, and connected tools search the literature and check citations.
-- I have tried OpenAI's Codex on side tasks, for comparison.
-- In measurement work, one model labels the text and a second model checks the labels.
+In research:
 
-Where I draw the line:
+- The research question, the design and every claim in print are my responsibility.
+- Check every reference against its DOI before citing it. Models produce convincing references that do not exist.
+- Declare AI use as each journal requires.
 
-- The research question and the design are mine, and so is every claim in print.
-- I check every reference against its DOI before it goes into a paper.
-- Public code runs on simulated or public data. Confidential research data stays out of public repositories.
-- I declare AI use as each journal requires.
+In code:
+
+- Public code runs on simulated or public data. Confidential data stays out of public repositories.
+- Keep API keys out of Git, and read through every repository before making it public.
+- When an LLM labels text for measurement, have a second model check the labels.
 
 ## Templates
 
-Starting points, not rules. Copy them into your own project and cut what you do not need.
+Copy them into your own project and delete what you do not need.
 
 | File | Use it for |
 |---|---|
